@@ -26,14 +26,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set output
+        run: | 
+          (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
+          echo "{name}={$COMMIT_SHA}" >> $GITHUB_OUTPUT
+
       - name: Log in to Docker Hub
         run: |
+              echo $GITHUB_OUTPUT
               echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       
       - name: Build and tag image
         id: commit_short
         run: |
-          (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
+          
           echo "::set-output name=commit_sha::$COMMIT_SHA"
           docker build -t ${{ inputs.Repository }}/${{ inputs.ImageName }}:$COMMIT_SHA -f Dockerfile .    
       
