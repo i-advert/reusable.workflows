@@ -33,8 +33,7 @@ jobs:
 
       - name: Log in to Docker Hub
         run: |
-              echo $GITHUB_OUTPUT
-              echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       
       - name: Build and tag image
         id: commit_short
