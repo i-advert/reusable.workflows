@@ -26,11 +26,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set output
-        run: | 
-          (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
-          echo "{name}={$COMMIT_SHA}" >> $GITHUB_OUTPUT
-
       - name: Log in to Docker Hub
         run: |
               echo $GITHUB_OUTPUT
@@ -39,9 +34,10 @@ jobs:
       - name: Build and tag image
         id: commit_short
         run: |
-          
-          echo "::set-output name=commit_sha::$COMMIT_SHA"
+          (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
           docker build -t ${{ inputs.Repository }}/${{ inputs.ImageName }}:$COMMIT_SHA -f Dockerfile .    
       
       - name: Push image to Docker Hub
-        run: docker push ${{ inputs.Repository }}/${{ inputs.ImageName }}:{{ steps.commit_short.outpusts.commit_sha }}
+        run: |
+          (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
+          docker push ${{ inputs.Repository }}/${{ inputs.ImageName }}:{{ steps.commit_short.outpusts.commit_sha }}
