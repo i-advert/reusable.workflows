@@ -20,7 +20,6 @@ on:
         description: "Relevant path to Dockerfile."
         required: false
         type: string
-        default: Dockerfile
 
 
 jobs:
@@ -38,8 +37,9 @@ jobs:
       - name: Build and tag image
         id: commit_short
         run: |
+          [[ -n ${{ inputs.DockerFilePath }} ]] && cd ${{ inputs.DockerFilePath }}
           (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
-          docker build -t ${{ inputs.Repository }}/${{ inputs.ImageName }}:$COMMIT_SHA -f ${{ inputs.DockerFilePath }} .    
+          docker build -t ${{ inputs.Repository }}/${{ inputs.ImageName }}:$COMMIT_SHA -f Dockerfile .    
       
       - name: Push image to Docker Hub
         run: |
