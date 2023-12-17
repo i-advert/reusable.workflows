@@ -40,4 +40,4 @@ jobs:
       - name: Push image to Docker Hub
         run: |
           (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
-          docker push ${{ inputs.Repository }}/${{ inputs.ImageName }}:{{ steps.commit_short.outpusts.commit_sha }}
+          docker push ${{ inputs.Repository }}/${{ inputs.ImageName }}:$COMMIT_SHA
