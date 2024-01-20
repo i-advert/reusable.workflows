@@ -47,7 +47,5 @@ jobs:
           docker push ${{ inputs.Repository }}/${{ inputs.ImageName }}:$COMMIT_SHA
 
           echo "version=$COMMIT_SHA" >> $GITHUB_OUTPUT
-          echo "image=${{ inputs.Repository }}/${{ inputs.ImageName }}" >> $GITHUB_OUTPUT
           echo $versioninfo
           echo "## Version: $COMMIT_SHA" >> $GITHUB_STEP_SUMMARY
-          echo "### image=${{ inputs.Repository }}/${{ inputs.ImageName }}" >> $GITHUB_STEP_SUMMARY
