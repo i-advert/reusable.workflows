@@ -45,14 +45,12 @@ jobs:
         id: commit_short
         run: |
           [[ -n ${{ inputs.DockerFilePath }} ]] && cd ${{ inputs.DockerFilePath }}
-          (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
-          docker build -t ${{ inputs.Repository }}/${{ inputs.ImageName }}:$COMMIT_SHA -f Dockerfile .    
+          docker build -t ${{ inputs.Repository }}/${{ inputs.ImageName }}:${{ inputs.Tag }} -f Dockerfile .    
       
       - name: Push image to Docker Hub
         run: |
-          (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
-          docker push ${{ inputs.Repository }}/${{ inputs.ImageName }}:$COMMIT_SHA
+          docker push ${{ inputs.Repository }}/${{ inputs.ImageName }}:${{ inputs.Tag }}
 
-          echo "version=$COMMIT_SHA" >> $GITHUB_OUTPUT
+          echo "version=${{ inputs.Tag }}" >> $GITHUB_OUTPUT
           echo $versioninfo
-          echo "## Version: $COMMIT_SHA" >> $GITHUB_STEP_SUMMARY
+          echo "## Version: ${{ inputs.Tag }}" >> $GITHUB_STEP_SUMMARY
