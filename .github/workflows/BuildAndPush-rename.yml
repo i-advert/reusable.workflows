@@ -1,0 +1,58 @@
+on:
+  workflow_call:
+    inputs:
+      # section for product relevant input
+      ImageName:
+        description: "The name for image."
+        required: true
+        type: string
+      Tag:
+        description: "Tag for image. If not provided, image tag will be generated from commit hash short."
+        required: false
+        type: string
+        default: hash
+      Repository:
+        description: "Repository name on Github where the image will pushed."
+        required: false
+        type: string
+        default: iadvert
+      DockerFilePath:
+        description: "Relevant path to Dockerfile."
+        required: false
+        type: string
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Rename template files
+        run: |
+          pwd
+          for file in *.template; do
+            mv -f "$file" "${file%.template}"
+          done
+
+      - name: Log in to Docker Hub
+        run: |
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      
+      - name: Build and tag image
+        id: commit_short
+        run: |
+          [[ -n ${{ inputs.DockerFilePath }} ]] && cd ${{ inputs.DockerFilePath }}
+          (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
+          docker build -t ${{ inputs.Repository }}/${{ inputs.ImageName }}:$COMMIT_SHA -f Dockerfile .    
+      
+      - name: Push image to Docker Hub
+        run: |
+          (( ${{ inputs.Tag }} == "hash" )) && COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7) || COMMIT_SHA=${{ inputs.Tag }}
+          docker push ${{ inputs.Repository }}/${{ inputs.ImageName }}:$COMMIT_SHA
+
+          echo "version=$COMMIT_SHA" >> $GITHUB_OUTPUT
+          echo $versioninfo
+          echo "## Version: $COMMIT_SHA" >> $GITHUB_STEP_SUMMARY
