@@ -36,6 +36,7 @@ jobs:
           for file in *.template; do
             mv -f "$file" "${file%.template}"
           done
+          cat ./config.yaml
 
       - name: Log in to Docker Hub
         run: |
@@ -44,7 +45,6 @@ jobs:
       - name: Build and tag image
         id: commit_short
         run: |
-          cat config.yaml
           [[ -n ${{ inputs.DockerFilePath }} ]] && cd ${{ inputs.DockerFilePath }}
           docker build -t ${{ inputs.Repository }}/${{ inputs.ImageName }}:${{ inputs.Tag }} -f Dockerfile .    
       
