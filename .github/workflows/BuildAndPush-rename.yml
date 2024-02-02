@@ -36,7 +36,6 @@ jobs:
           for file in *.template; do
             mv -f "$file" "${file%.template}"
           done
-          cat ./config.yaml
 
       - name: Log in to Docker Hub
         run: |
