@@ -6,6 +6,10 @@ on:
         description: "Repository name on DockerHub where the image will be pushed."
         required: true
         type: string
+      WerfConfigFilePath:
+        description: "Werf configuration file's path"
+        required: false
+        type: string
 
 jobs:
 
