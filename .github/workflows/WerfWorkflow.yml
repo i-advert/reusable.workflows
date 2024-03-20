@@ -30,3 +30,4 @@ jobs:
         env:
           WERF_KUBECONFIG_BASE64: ${{ secrets.KUBE_CONFIG_BASE64_DATA }}
           WERF_SECRET_KEY: ${{ secrets.WERF_SECRET_KEY }}
+          WERF_CONFIG : ${{ inputs.WerfConfigFilePath || 'werf.yaml'}}
