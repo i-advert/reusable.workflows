@@ -3,7 +3,7 @@ on:
     inputs:
 
       Registry:
-        description: "Repository name on Github where the image will pushed."
+        description: "Repository name on DockerHub where the image will be pushed."
         required: true
         type: string
 
