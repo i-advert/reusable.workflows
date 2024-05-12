@@ -28,10 +28,10 @@ jobs:
     - name: Git Clone Repo on Remote
       run: >
         ssh -p $ANSIBLE_PORT -o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
-        "cd /usr/local/automation/devops && git fetch --all && git reset --hard origin/master && git clean -fd"
+        "cd /usr/local/i-advert/devops && git fetch --all && git reset --hard origin/master && git clean -fd"
 
     - name: Run Ansible Playbook on Remote
       run: >
         ssh -p $ANSIBLE_PORT -o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
-        "cd /usr/local/automation/devops &&
-        ansible-playbook ${REPO_NAME}/playbooks/update.yml -i hosts.yaml --private-key /usr/local/ansible_key"
+        "cd /usr/local/i-advert/devops &&
+        ansible-playbook ${REPO_NAME}/playbooks/update.yml -i hosts.yaml --private-key /usr/local/i-advert/ansible_key"
