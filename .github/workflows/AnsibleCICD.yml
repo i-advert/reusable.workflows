@@ -28,7 +28,7 @@ jobs:
 
     - name: Git Clone Repo on Remote
       run: >
-        ssh -p $ANSIBLE_PORT-o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
+        ssh -p $ANSIBLE_PORT -o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
         "cd /usr/local/automation/devops && git fetch --all && git reset --hard origin/master && git clean -fd"
 
     - name: Run Ansible Playbook on Remote
