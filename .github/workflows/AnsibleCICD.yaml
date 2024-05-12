@@ -1,0 +1,32 @@
+on:
+  workflow_call:
+
+env: 
+  ANSIBLE_USER: 'github'
+  ANSIBLE_HOST: '2.58.67.208'
+  REPO_NAME: 'pl4c3h0ld3r'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+
+    steps:
+
+    - name: Create Key File
+      env:
+        BOT_PRIVATE_KEY: ${{ secrets.BOT_PRIVATE_KEY }}
+      run: |
+        touch ~/keyfile
+        chmod 600 ~/keyfile
+        echo "$BOT_PRIVATE_KEY" > ~/keyfile
+
+    - name: Git Clone Repo on Remote
+      run: >
+        ssh -o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
+        "cd /usr/local/automation/devops && git fetch --all && git reset --hard origin/master && git clean -fd"
+
+    - name: Run Ansible Playbook on Remote
+      run: >
+        ssh -o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
+        "cd /usr/local/automation/devops &&
+        ansible-playbook ${REPO_NAME}/playbooks/update.yml -i hosts.yaml --private-key /usr/local/ansible_key"
