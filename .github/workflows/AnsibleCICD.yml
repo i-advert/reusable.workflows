@@ -1,10 +1,16 @@
 on:
   workflow_call:
+    inputs:
+      RepoName:
+        description: "The name for image."
+        required: true
+        type: string
 
-env: 
+env:
   ANSIBLE_USER: 'github'
   ANSIBLE_HOST: '2.58.67.208'
-  REPO_NAME: 'pl4c3h0ld3r'
+  REPO_NAME: ${{ inputs.RepoName }}
+  BOT_PRIVATE_KEY: ${{ secrets.BOT_PRIVATE_KEY }}
 
 jobs:
   deploy:
@@ -13,8 +19,6 @@ jobs:
     steps:
 
     - name: Create Key File
-      env:
-        BOT_PRIVATE_KEY: ${{ secrets.BOT_PRIVATE_KEY }}
       run: |
         touch ~/keyfile
         chmod 600 ~/keyfile
