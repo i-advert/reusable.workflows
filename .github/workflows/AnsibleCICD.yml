@@ -34,4 +34,4 @@ jobs:
       run: >
         ssh -p $ANSIBLE_PORT -o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
         "cd /usr/local/i-advert/devops &&
-        ansible-playbook ${REPO_NAME#*/}/playbooks/update.yml -i hosts.yaml --private-key /usr/local/i-advert/ansible_key"
+        ansible-playbook ${REPO_NAME#*/}/playbooks/update.yml -i ${REPO_NAME#*/}/hosts.yaml --private-key /usr/local/i-advert/ansible_key"
