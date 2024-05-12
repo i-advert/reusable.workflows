@@ -9,6 +9,7 @@ on:
 env:
   ANSIBLE_USER: 'github'
   ANSIBLE_HOST: '2.58.67.208'
+  ANSIBLE_PORT: '2023'
   REPO_NAME: ${{ inputs.RepoName }}
   BOT_PRIVATE_KEY: ${{ secrets.BOT_PRIVATE_KEY }}
 
@@ -27,11 +28,11 @@ jobs:
 
     - name: Git Clone Repo on Remote
       run: >
-        ssh -o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
+        ssh -p $ANSIBLE_PORT-o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
         "cd /usr/local/automation/devops && git fetch --all && git reset --hard origin/master && git clean -fd"
 
     - name: Run Ansible Playbook on Remote
       run: >
-        ssh -o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
+        ssh -p $ANSIBLE_PORT -o StrictHostKeyChecking=no $ANSIBLE_USER@$ANSIBLE_HOST -i ~/keyfile
         "cd /usr/local/automation/devops &&
         ansible-playbook ${REPO_NAME}/playbooks/update.yml -i hosts.yaml --private-key /usr/local/ansible_key"
