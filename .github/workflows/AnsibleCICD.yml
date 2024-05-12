@@ -23,7 +23,6 @@ jobs:
       run: |
         touch ~/keyfile
         chmod 600 ~/keyfile
-        echo "$BOT_PRIVATE_KEY"
         echo "$BOT_PRIVATE_KEY" > ~/keyfile
 
     - name: Git Clone Repo on Remote
