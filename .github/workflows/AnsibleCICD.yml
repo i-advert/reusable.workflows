@@ -22,6 +22,7 @@ jobs:
     - name: Create Key File
       run: |
         echo "$BOT_PRIVATE_KEY" > ~/keyfile
+        sed -i 's/\r//' ~/keyfile
         chmod 600 ~/keyfile
 
     - name: Git Clone Repo on Remote
