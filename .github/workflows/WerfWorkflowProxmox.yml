@@ -1,0 +1,37 @@
+on:
+  workflow_call:
+    inputs:
+
+      Registry:
+        description: "Repository name on DockerHub where the image will be pushed."
+        required: true
+        type: string
+      WerfConfigFilePath:
+        description: "Werf configuration file's path"
+        required: false
+        type: string
+
+jobs:
+
+  converge:
+    name: Werf converge
+    runs-on: ubuntu-22.04
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Werf
+        uses: werf/actions/install@v1.2
+
+      - name: Run script
+        run: |
+          echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          . $(werf ci-env github --as-file)
+          werf converge --repo ${{ inputs.Registry }}
+        env:
+          WERF_KUBECONFIG_BASE64: ${{ secrets.PROX_KUBE_CONFIG_BASE64_DATA }}
+          WERF_SECRET_KEY: ${{ secrets.WERF_SECRET_KEY }}
+          WERF_CONFIG : ${{ inputs.WerfConfigFilePath || 'werf.yaml'}}
